@@ -6,9 +6,9 @@
 <xacro:include filename="$(find cleaning_robot_assembly_description)/urdf/cleaning_robot_assembly.gazebo" />
 <link name="base_link">
   <inertial>
-    <origin xyz="-0.010230098607375893 -0.0003124840680256018 0.10766281764491467" rpy="0 0 0"/>
-    <mass value="8.266268612843005"/>
-    <inertia ixx="0.111901" iyy="0.101028" izz="0.115277" ixy="-0.003854" iyz="0.0042" ixz="0.003247"/>
+    <origin xyz="-0.010466456463713802 -0.0003168058953017059 0.10831172177775374" rpy="0 0 0"/>
+    <mass value="8.208463592723788"/>
+    <inertia ixx="0.110702" iyy="0.099596" izz="0.113639" ixy="-0.003852" iyz="0.004197" ixz="0.003067"/>
   </inertial>
   <visual>
     <origin xyz="0 0 0" rpy="0 0 0"/>
