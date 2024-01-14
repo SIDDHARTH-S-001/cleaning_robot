@@ -26,10 +26,10 @@
 <transmission name="fork_lift_joint_tran">
   <type>transmission_interface/SimpleTransmission</type>
   <joint name="fork_lift_joint">
-    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
   </joint>
   <actuator name="fork_lift_joint_actr">
-    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
 </transmission>
@@ -37,10 +37,10 @@
 <transmission name="left_pick_tran">
   <type>transmission_interface/SimpleTransmission</type>
   <joint name="left_pick">
-    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
   </joint>
   <actuator name="left_pick_actr">
-    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
 </transmission>
@@ -48,10 +48,10 @@
 <transmission name="right_pick_tran">
   <type>transmission_interface/SimpleTransmission</type>
   <joint name="right_pick">
-    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
   </joint>
   <actuator name="right_pick_actr">
-    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
 </transmission>

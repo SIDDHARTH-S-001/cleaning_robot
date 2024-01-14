@@ -1,7 +1,7 @@
 <launch>
 
 <rosparam file="$(find cleaning_robot_assembly_description)/launch/controller.yaml" command="load"/>
-<node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="cleaning_robot_assembly" args="right_drive_position_controller left_drive_position_controller fork_lift_joint_position_controller left_pick_position_controller right_pick_position_controller joint_state_controller "/>
+<node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="cleaning_robot_assembly" args="right_drive_position_controller left_drive_position_controller eef_controller joint_state_controller "/>
 <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
   <remap from="/joint_states" to="/cleaning_robot_assembly/joint_states"/>
 </node>

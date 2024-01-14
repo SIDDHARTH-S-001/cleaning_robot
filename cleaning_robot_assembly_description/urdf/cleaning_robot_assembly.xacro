@@ -25,7 +25,7 @@
   </collision>
 </link>
 
-<link name="right_wheel_1">
+<link name="right_wheel">
   <inertial>
     <origin xyz="-1.9475303414941916e-15 -0.007842031913982417 1.2323475573339238e-14" rpy="0 0 0"/>
     <mass value="1.0207980214073957"/>
@@ -46,7 +46,7 @@
   </collision>
 </link>
 
-<link name="left_wheel_1">
+<link name="left_wheel">
   <inertial>
     <origin xyz="2.5866925465521704e-15 0.007842031913982556 1.2288781103819701e-14" rpy="0 0 0"/>
     <mass value="1.0207980214073957"/>
@@ -67,14 +67,14 @@
   </collision>
 </link>
 
-<link name="ydlidar_1">
+<link name="ydlidar">
   <inertial>
     <origin xyz="0.026706155403509572 0.025000237545982823 0.037701142222791084" rpy="0 0 0"/>
     <mass value="1.1515616542314233"/>
     <inertia ixx="0.000489" iyy="0.000861" izz="0.000987" ixy="-0.0" iyz="-0.0" ixz="-0.000148"/>
   </inertial>
   <visual>
-    <origin xyz="0.0254 0.025002 -0.293" rpy="0 0 0"/>
+    <origin xyz="0.0 0.0 -0.335" rpy="0 0 0"/>
     <geometry>
       <mesh filename="package://cleaning_robot_assembly_description/meshes/ydlidar_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
@@ -88,7 +88,7 @@
   </collision>
 </link>
 
-<link name="fork_lift_1">
+<link name="fork_lift">
   <inertial>
     <origin xyz="0.004496086305917135 0.06235925922763712 -0.023132472112988356" rpy="0 0 0"/>
     <mass value="0.11520373102728743"/>
@@ -99,7 +99,7 @@
     <geometry>
       <mesh filename="package://cleaning_robot_assembly_description/meshes/fork_lift_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
-    <material name="polycarbonate_bronze"/>
+    <material name="steel_satin"/>
   </visual>
   <collision>
     <origin xyz="-0.13885 0.0797 -0.15375" rpy="0 0 0"/>
@@ -109,7 +109,7 @@
   </collision>
 </link>
 
-<link name="eef_base_1">
+<link name="eef_base">
   <inertial>
     <origin xyz="0.053928998860087174 0.040021209291948676 -0.009476696298688747" rpy="0 0 0"/>
     <mass value="1.0505842316649285"/>
@@ -130,7 +130,7 @@
   </collision>
 </link>
 
-<link name="left_finger_1">
+<link name="left_finger">
   <inertial>
     <origin xyz="0.027926963844938285 -0.00977330285299979 0.002500000036867095" rpy="0 0 0"/>
     <mass value="0.03517137310762523"/>
@@ -151,7 +151,7 @@
   </collision>
 </link>
 
-<link name="right_finger_1">
+<link name="right_finger">
   <inertial>
     <origin xyz="0.02792696384493834 0.009773302853000033 0.002500000037638575" rpy="0 0 0"/>
     <mass value="0.03517137310762523"/>
@@ -172,7 +172,7 @@
   </collision>
 </link>
 
-<link name="depth_cam_1">
+<link name="depth_cam">
   <inertial>
     <origin xyz="0.008498435151100464 0.022529677339244106 -0.005238954013314812" rpy="0 0 0"/>
     <mass value="0.32742017260685813"/>
@@ -196,57 +196,57 @@
 <joint name="right_drive" type="continuous">
   <origin xyz="0.0 -0.144 0.05" rpy="0 0 0"/>
   <parent link="base_link"/>
-  <child link="right_wheel_1"/>
-  <axis xyz="-0.0 -1.0 0.0"/>
+  <child link="right_wheel"/>
+  <axis xyz="-0.0 1.0 0.0"/>
 </joint>
 
 <joint name="left_drive" type="continuous">
   <origin xyz="0.0 0.144 0.05" rpy="0 0 0"/>
   <parent link="base_link"/>
-  <child link="left_wheel_1"/>
+  <child link="left_wheel"/>
   <axis xyz="0.0 1.0 0.0"/>
 </joint>
 
 <joint name="Rigid 3" type="fixed">
-  <origin xyz="-0.0254 -0.025002 0.293" rpy="0 0 0"/>
+  <origin xyz="-0.0 -0.0 0.335" rpy="0 0 0"/>
   <parent link="base_link"/>
-  <child link="ydlidar_1"/>
+  <child link="ydlidar"/>
 </joint>
 
 <joint name="fork_lift_joint" type="prismatic">
   <origin xyz="0.13885 -0.0797 0.15375" rpy="0 0 0"/>
   <parent link="base_link"/>
-  <child link="fork_lift_1"/>
+  <child link="fork_lift"/>
   <axis xyz="-0.0 0.0 1.0"/>
-  <limit upper="0.0" lower="0.0" effort="100" velocity="100"/>
+  <limit upper="0.125" lower="-0.03" effort="100" velocity="100"/>
 </joint>
 
 <joint name="Rigid 5" type="fixed">
   <origin xyz="0.007449 0.07895 -0.0239" rpy="0 0 0"/>
-  <parent link="fork_lift_1"/>
-  <child link="eef_base_1"/>
+  <parent link="fork_lift"/>
+  <child link="eef_base"/>
 </joint>
 
 <joint name="left_pick" type="prismatic">
   <origin xyz="0.066 0.0375 -0.0695" rpy="0 0 0"/>
-  <parent link="eef_base_1"/>
-  <child link="left_finger_1"/>
+  <parent link="eef_base"/>
+  <child link="left_finger"/>
   <axis xyz="-0.0 1.0 0.0"/>
-  <limit upper="0.0" lower="0.0" effort="100" velocity="100"/>
+  <limit upper="0.0125" lower="-0.0125" effort="100" velocity="100"/>
 </joint>
 
 <joint name="right_pick" type="prismatic">
   <origin xyz="0.066 -0.0375 -0.0695" rpy="0 0 0"/>
-  <parent link="eef_base_1"/>
-  <child link="right_finger_1"/>
+  <parent link="eef_base"/>
+  <child link="right_finger"/>
   <axis xyz="-0.0 1.0 0.0"/>
-  <limit upper="0.0" lower="0.0" effort="100" velocity="100"/>
+  <limit upper="0.0125" lower="-0.0125" effort="100" velocity="100"/>
 </joint>
 
 <joint name="Rigid 8" type="fixed">
   <origin xyz="0.032345 -0.022492 0.017677" rpy="0 0 0"/>
-  <parent link="eef_base_1"/>
-  <child link="depth_cam_1"/>
+  <parent link="eef_base"/>
+  <child link="depth_cam"/>
 </joint>
 
 </robot>
