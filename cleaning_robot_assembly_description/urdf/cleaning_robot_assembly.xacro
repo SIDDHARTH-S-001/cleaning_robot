@@ -1,0 +1,252 @@
+<?xml version="1.0" ?>
+<robot name="cleaning_robot_assembly" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:include filename="$(find cleaning_robot_assembly_description)/urdf/materials.xacro" />
+<xacro:include filename="$(find cleaning_robot_assembly_description)/urdf/cleaning_robot_assembly.trans" />
+<xacro:include filename="$(find cleaning_robot_assembly_description)/urdf/cleaning_robot_assembly.gazebo" />
+<link name="base_link">
+  <inertial>
+    <origin xyz="-0.010230098607375893 -0.0003124840680256018 0.10766281764491467" rpy="0 0 0"/>
+    <mass value="8.266268612843005"/>
+    <inertia ixx="0.111901" iyy="0.101028" izz="0.115277" ixy="-0.003854" iyz="0.0042" ixz="0.003247"/>
+  </inertial>
+  <visual>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://cleaning_robot_assembly_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="steel_satin"/>
+  </visual>
+  <collision>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://cleaning_robot_assembly_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="right_wheel_1">
+  <inertial>
+    <origin xyz="-1.9475303414941916e-15 -0.007842031913982417 1.2323475573339238e-14" rpy="0 0 0"/>
+    <mass value="1.0207980214073957"/>
+    <inertia ixx="0.000884" iyy="0.00167" izz="0.000884" ixy="-0.0" iyz="-0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.0 0.144 -0.05" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://cleaning_robot_assembly_description/meshes/right_wheel_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="abs_white"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.0 0.144 -0.05" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://cleaning_robot_assembly_description/meshes/right_wheel_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="left_wheel_1">
+  <inertial>
+    <origin xyz="2.5866925465521704e-15 0.007842031913982556 1.2288781103819701e-14" rpy="0 0 0"/>
+    <mass value="1.0207980214073957"/>
+    <inertia ixx="0.000884" iyy="0.00167" izz="0.000884" ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 -0.144 -0.05" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://cleaning_robot_assembly_description/meshes/left_wheel_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="abs_white"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 -0.144 -0.05" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://cleaning_robot_assembly_description/meshes/left_wheel_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="ydlidar_1">
+  <inertial>
+    <origin xyz="0.026706155403509572 0.025000237545982823 0.037701142222791084" rpy="0 0 0"/>
+    <mass value="1.1515616542314233"/>
+    <inertia ixx="0.000489" iyy="0.000861" izz="0.000987" ixy="-0.0" iyz="-0.0" ixz="-0.000148"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0254 0.025002 -0.293" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://cleaning_robot_assembly_description/meshes/ydlidar_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="steel_satin"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0254 0.025002 -0.293" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://cleaning_robot_assembly_description/meshes/ydlidar_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="fork_lift_1">
+  <inertial>
+    <origin xyz="0.004496086305917135 0.06235925922763712 -0.023132472112988356" rpy="0 0 0"/>
+    <mass value="0.11520373102728743"/>
+    <inertia ixx="0.000459" iyy="1.8e-05" izz="0.000466" ixy="-9e-06" iyz="2e-05" ixz="2e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.13885 0.0797 -0.15375" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://cleaning_robot_assembly_description/meshes/fork_lift_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="polycarbonate_bronze"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.13885 0.0797 -0.15375" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://cleaning_robot_assembly_description/meshes/fork_lift_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="eef_base_1">
+  <inertial>
+    <origin xyz="0.053928998860087174 0.040021209291948676 -0.009476696298688747" rpy="0 0 0"/>
+    <mass value="1.0505842316649285"/>
+    <inertia ixx="0.005343" iyy="0.00521" izz="0.008905" ixy="-0.003905" iyz="-0.000344" ixz="-1.2e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.146299 0.00075 -0.12985" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://cleaning_robot_assembly_description/meshes/eef_base_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="steel_satin"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.146299 0.00075 -0.12985" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://cleaning_robot_assembly_description/meshes/eef_base_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="left_finger_1">
+  <inertial>
+    <origin xyz="0.027926963844938285 -0.00977330285299979 0.002500000036867095" rpy="0 0 0"/>
+    <mass value="0.03517137310762523"/>
+    <inertia ixx="1.4e-05" iyy="2e-05" izz="1.4e-05" ixy="2e-06" iyz="0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.212299 -0.03675 -0.06035" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://cleaning_robot_assembly_description/meshes/left_finger_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="abs_white"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.212299 -0.03675 -0.06035" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://cleaning_robot_assembly_description/meshes/left_finger_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="right_finger_1">
+  <inertial>
+    <origin xyz="0.02792696384493834 0.009773302853000033 0.002500000037638575" rpy="0 0 0"/>
+    <mass value="0.03517137310762523"/>
+    <inertia ixx="1.4e-05" iyy="2e-05" izz="1.4e-05" ixy="-2e-06" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.212299 0.03825 -0.06035" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://cleaning_robot_assembly_description/meshes/right_finger_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="abs_white"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.212299 0.03825 -0.06035" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://cleaning_robot_assembly_description/meshes/right_finger_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="depth_cam_1">
+  <inertial>
+    <origin xyz="0.008498435151100464 0.022529677339244106 -0.005238954013314812" rpy="0 0 0"/>
+    <mass value="0.32742017260685813"/>
+    <inertia ixx="0.000252" iyy="2.4e-05" izz="0.00025" ixy="0.0" iyz="0.0" ixz="-1e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.178644 0.023242 -0.147527" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://cleaning_robot_assembly_description/meshes/depth_cam_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="steel_satin"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.178644 0.023242 -0.147527" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://cleaning_robot_assembly_description/meshes/depth_cam_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<joint name="right_drive" type="continuous">
+  <origin xyz="0.0 -0.144 0.05" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="right_wheel_1"/>
+  <axis xyz="-0.0 -1.0 0.0"/>
+</joint>
+
+<joint name="left_drive" type="continuous">
+  <origin xyz="0.0 0.144 0.05" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="left_wheel_1"/>
+  <axis xyz="0.0 1.0 0.0"/>
+</joint>
+
+<joint name="Rigid 3" type="fixed">
+  <origin xyz="-0.0254 -0.025002 0.293" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="ydlidar_1"/>
+</joint>
+
+<joint name="fork_lift_joint" type="prismatic">
+  <origin xyz="0.13885 -0.0797 0.15375" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="fork_lift_1"/>
+  <axis xyz="-0.0 0.0 1.0"/>
+  <limit upper="0.0" lower="0.0" effort="100" velocity="100"/>
+</joint>
+
+<joint name="Rigid 5" type="fixed">
+  <origin xyz="0.007449 0.07895 -0.0239" rpy="0 0 0"/>
+  <parent link="fork_lift_1"/>
+  <child link="eef_base_1"/>
+</joint>
+
+<joint name="left_pick" type="prismatic">
+  <origin xyz="0.066 0.0375 -0.0695" rpy="0 0 0"/>
+  <parent link="eef_base_1"/>
+  <child link="left_finger_1"/>
+  <axis xyz="-0.0 1.0 0.0"/>
+  <limit upper="0.0" lower="0.0" effort="100" velocity="100"/>
+</joint>
+
+<joint name="right_pick" type="prismatic">
+  <origin xyz="0.066 -0.0375 -0.0695" rpy="0 0 0"/>
+  <parent link="eef_base_1"/>
+  <child link="right_finger_1"/>
+  <axis xyz="-0.0 1.0 0.0"/>
+  <limit upper="0.0" lower="0.0" effort="100" velocity="100"/>
+</joint>
+
+<joint name="Rigid 8" type="fixed">
+  <origin xyz="0.032345 -0.022492 0.017677" rpy="0 0 0"/>
+  <parent link="eef_base_1"/>
+  <child link="depth_cam_1"/>
+</joint>
+
+</robot>

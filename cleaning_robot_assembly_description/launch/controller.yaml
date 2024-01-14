@@ -1,0 +1,27 @@
+cleaning_robot_assembly_controller:
+  # Publish all joint states -----------------------------------
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50
+
+  # Position Controllers --------------------------------------
+  right_drive_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: right_drive
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  left_drive_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: left_drive
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  fork_lift_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: fork_lift_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  left_pick_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: left_pick
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  right_pick_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: right_pick
+    pid: {p: 100.0, i: 0.01, d: 10.0}
