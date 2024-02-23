@@ -184,9 +184,9 @@ class MotorFeedbackListener():
 # Initialize left and right PID controllers with given constants and setpoint
 left_pid = None
 right_pid = None
-kp = 2.6
-ki = 1.1
-kd = 1.8
+kp = 1.2
+ki = 0.8
+kd = 0.25
 setpoint = 0.0
 
 def main():

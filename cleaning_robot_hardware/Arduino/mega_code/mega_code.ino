@@ -3,19 +3,19 @@
 #include <std_msgs/Int32.h>
 
 #define Encoder_output_A_left 3 // pin2 of the Arduino
-#define Encoder_output_B_left 4 // pin 3 of the Arduino
+#define Encoder_output_B_left 5 // pin 3 of the Arduino
 #define Encoder_output_A_right 2 // pin2 of the Arduino
-#define Encoder_output_B_right 5 // pin 3 of the Arduino
+#define Encoder_output_B_right 4 // pin 3 of the Arduino
 
 int64_t data_array[2] = {0};
 
-#define Motor_A_L 6
-#define Motor_B_L 7
-#define Motor_A_R 8
-#define Motor_B_R 9
+#define Motor_L_Dir 7
+#define Motor_L_Stp 6
+#define Motor_R_Dir 9
+#define Motor_R_Stp 8
 
-volatile int Count_pulses_left = 0;
-volatile int Count_pulses_right = 0;
+volatile long long int Count_pulses_left = 0;
+volatile long long int Count_pulses_right = 0;
 
 ros::NodeHandle nh;
 
@@ -26,12 +26,12 @@ void leftCmdCallback(const std_msgs::Int32& left_cmd_msg) {
   // Process left motor command
   int pwm = left_cmd_msg.data;
   if(pwm > 0){
-    analogWrite(Motor_A_L, pwm);
-    analogWrite(Motor_B_L, 0);
+    digitalWrite(Motor_L_Dir, 0);
+    analogWrite(Motor_L_Stp, pwm);
   }
   else{
-    analogWrite(Motor_A_L, 0);
-    analogWrite(Motor_B_L, abs(pwm));
+    digitalWrite(Motor_L_Dir, 1);
+    analogWrite(Motor_L_Stp, abs(pwm));
   }
 }
 
@@ -42,12 +42,12 @@ void rightCmdCallback(const std_msgs::Int32& right_cmd_msg) {
   int pwm = right_cmd_msg.data;
 //  digitalWrite(LED_PIN, (msg->data == 0) ? LOW : HIGH);  
   if(pwm > 0){
-    analogWrite(Motor_A_R, pwm);
-    analogWrite(Motor_B_R, 0);
+    digitalWrite(Motor_R_Dir, 1);
+    analogWrite(Motor_R_Stp, pwm);
   }
   else{
-    analogWrite(Motor_A_R, 0);
-    analogWrite(Motor_B_R, abs(pwm));
+    digitalWrite(Motor_R_Dir, 0);
+    analogWrite(Motor_R_Stp, abs(pwm));
   }
 }
 
@@ -61,6 +61,10 @@ void setup() {
 
   pinMode(Encoder_output_A_left,INPUT); // sets the Encoder_output_A pin as the input
   pinMode(Encoder_output_B_left,INPUT); // sets the Encoder_output_B pin as the input
+  pinMode(Motor_L_Dir,OUTPUT);
+  pinMode(Motor_L_Stp,OUTPUT); 
+  pinMode(Motor_R_Dir,OUTPUT);
+  pinMode(Motor_R_Stp,OUTPUT); 
   attachInterrupt(digitalPinToInterrupt(Encoder_output_A_left),DC_Motor_Encoder_left,RISING);
   attachInterrupt(digitalPinToInterrupt(Encoder_output_A_right),DC_Motor_Encoder_right,RISING);
 }
@@ -68,7 +72,7 @@ void setup() {
 void loop() {
   motor_feedback_msg.data_length = 2;
   data_array[0] = Count_pulses_left;
-  data_array[1] = Count_pulses_right;
+  data_array[1] = Count_pulses_right * -1;
   motor_feedback_msg.data = data_array;
   motor_feedback_pub.publish(&motor_feedback_msg);
 
