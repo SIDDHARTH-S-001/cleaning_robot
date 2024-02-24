@@ -109,7 +109,7 @@ class MotorFeedbackListener():
         self.right_motor_cmd = 0.0
 
         self.wheel_separation = 0.288  # Adjust this value according to your robot's wheel separation
-        self.wheel_radius = 0.035
+        self.wheel_radius = 0.055
 
     def cmd_vel_callback(self, msg):
         linear_velocity = msg.linear.x

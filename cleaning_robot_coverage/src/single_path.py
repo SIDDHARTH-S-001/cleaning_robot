@@ -100,7 +100,7 @@ class MapLoader:
             y_range = range(0, self.map_image.shape[0], 10)
             max_index = len(y_range) * len(x_range)
             # Get the shape of the resulting array
-            result_shape = (len(x_range), len(y_range), 2)
+            result_shape = (len(x_range), len(y_range), 4)
 
             # Initialize the result array
             result_array = np.ones(result_shape, dtype=np.int64)
@@ -124,8 +124,11 @@ class MapLoader:
                             color_map[y, x] = [0, 0, 255]  # Red for other red dots
 
                         result_array[x_ind, y_ind, 0] = number_count
-                        result_array[x_ind, y_ind, 1] = 255
-                        
+                        result_array[x_ind, y_ind, 1] = x
+                        result_array[x_ind, y_ind, 2] = y
+                        result_array[x_ind, y_ind, 3] = 255
+                        img = color_map
+                        self.map = color_map
                         goal_pixel_positions.append(((x, y)))
                         x_map, y_map = self.pixel_to_map_coordinates(x, y)
                         goal_positions.append(
@@ -134,30 +137,32 @@ class MapLoader:
                         goal_index += 1
                     else:
                         result_array[x_ind, y_ind, 0] = number_count
-                        result_array[x_ind, y_ind, 1] = 0
+                        result_array[x_ind, y_ind, 1] = x
+                        result_array[x_ind, y_ind, 2] = y
+                        result_array[x_ind, y_ind, 3] = 0
                     number_count += 1
             # print(result_array[1:10,:])
                     
             print('goal index', goal_index)
-            result = self.spiral_dfs_with_blocked(result_array, (4,3))
+            # result = self.spiral_dfs_with_blocked(result_array, (4,3))
+
+            self.get_path(result_array)
+
+            goal_pixel_positions = self.goal_points
             
-            print(result)
+            print(goal_pixel_positions)
 
             # Draw green lines between consecutive red dots
-            for i in range(1, len(goal_positions)):
+            for i in range(1, len(goal_pixel_positions)):
                 cv2.line(
-                    color_map,
-                    (
-                        int(goal_pixel_positions[i - 1][0]),
-                        int(goal_pixel_positions[i - 1][1]),
-                    ),
+                    img,
+                    (int(goal_pixel_positions[i - 1][0]), int(goal_pixel_positions[i - 1][1])),
                     (int(goal_pixel_positions[i][0]), int(goal_pixel_positions[i][1])),
-                    (0, 255, 0),
-                    1,
+                    (255, 0, 0),
+                    1
                 )
 
-                cv2.circle(color_map,(int(goal_pixel_positions[i - 1][0]),int(goal_pixel_positions[i - 1][1]),),radius=1,color=(0, 0, 255),thickness=-1,
-                )  # -1 for filled circle
+                cv2.circle(color_map,(int(goal_pixel_positions[i - 1][0]),int(goal_pixel_positions[i - 1][1])),radius=1,color=(0, 0, 255),thickness=-1)
 
             rospy.loginfo("Goal Positions (Map Coordinates):")
             # for position, index in goal_positions:
@@ -167,8 +172,8 @@ class MapLoader:
             #     # Wait for the robot to reach the goal before proceeding to the next one
             #     rospy.wait_for_message('/move_base/result', MoveBaseActionResult)
 
-            cv2.imshow("Modified Map", color_map)
-            print(color_map.shape)
+            cv2.imshow("Modified Map", img)
+            print(img.shape)
             # cv2.imwrite('result.jpg', color_map)
             cv2.waitKey(0)
             cv2.destroyAllWindows()
@@ -264,14 +269,94 @@ class MapLoader:
         dfs(col, row, 0)
         return result
 
+    def get_path(self, matrix):
+        self.goal_points = []
+        self.matrix = matrix
+        self.generate()
+
+    def generate(self):
+        x, y = self.get_index()
+        print(x,y)
+        if x is None and y is None:
+            return 
+        self.goal_points.append((self.matrix[x, y, 1], self.matrix[x, y, 2]))
+        self.mark_visited(x,y)
+        
+        # print(self.matrix[x,y,0])
+        # print(self.matrix[:,0,:])
+        # print(self.matrix[1,7,:])
+        i = 1
+        while True:
+            # print(self.matrix[x, y-5:y+5])
+            # print(self.matrix[x, y+i, 3])
+            if self.matrix[x, y+i, 3] == 255:
+                y += i
+                if x > 0 and self.matrix[x-1, y, 3] == 255:
+                    return self.generate()
+                self.goal_points.append((self.matrix[x, y, 1], self.matrix[x, y, 2]))
+                self.mark_visited(x,y)
+                print(x,y)
+            else:
+                # print(self.matrix[x+1, y, 3])
+                if self.matrix[x+1, y, 3] == 255:
+                    x += 1
+                    self.goal_points.append((self.matrix[x+1, y, 1], self.matrix[x+1, y, 2]))
+                    self.mark_visited(x,y)
+                    print(x,y)
+                    if i == 1:
+                        i = -1
+                    else:
+                        i = 1
+                else:
+                    return self.generate()
+            
+            goal_pixel_positions = self.goal_points
+            for k in range(1, len(goal_pixel_positions)):
+                cv2.line(
+                    self.map,
+                    (
+                        int(goal_pixel_positions[k - 1][0]),
+                        int(goal_pixel_positions[k - 1][1]),
+                    ),
+                    (int(goal_pixel_positions[k][0]), int(goal_pixel_positions[k][1])),
+                    (0, 255, 0),
+                    1,
+                )
+
+                # cv2.circle(self.map,(int(goal_pixel_positions[k - 1][0]),int(goal_pixel_positions[k - 1][1]),),radius=1,color=(0, 0, 255),thickness=-1,
+                # )  # -1 for filled circle
+            cv2.imshow("Modified Maps", self.map)
+            # cv2.imwrite('result.jpg', color_map)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+        return
+
+    def mark_visited(self, x, y):
+        self.matrix[x,y,3] = 0
+
+
+    def get_index(self):
+        for i, array in enumerate(self.matrix):
+            for j, value in enumerate(array):
+                if value[3] == 255:
+                    return i, j
+        
+        print("finished")
+        return None, None
+    
+    def check_valid(self, x,y):
+        if x >= 0 and x <= self.matrix.shape[1] or  y >= 0 and y <= self.matrix.shape[0]:
+            if self.matrix[x, y, 1] == 255:
+                return True
+        return False
 
 if __name__ == "__main__":
     # Replace these paths with your actual paths
     map_file_path = "/home/jatin/catkin_ws/src/CleaningRobot/cleaning_robot_navigation/maps/gazebo_world.pgm"
     yaml_file_path = "/home/jatin/catkin_ws/src/CleaningRobot/cleaning_robot_navigation/maps/gazebo_world.yaml"
 
-    map_file_path = '/home/jatin/catkin_ws/src/CleaningRobot/cleaning_robot_navigation/maps/eric.pgm'
-    yaml_file_path = '/home/jatin/catkin_ws/src/CleaningRobot/cleaning_robot_navigation/maps/eric.yaml'
+    # map_file_path = '/home/jatin/catkin_ws/src/CleaningRobot/cleaning_robot_navigation/maps/L412.pgm'
+    # yaml_file_path = '/home/jatin/catkin_ws/src/CleaningRobot/cleaning_robot_navigation/maps/L412.yaml'
 
     # Create MapLoader instance
     map_loader = MapLoader(map_file_path, yaml_file_path)
