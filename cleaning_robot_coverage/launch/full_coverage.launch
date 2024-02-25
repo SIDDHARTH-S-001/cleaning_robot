@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <launch>
-        <arg name="map" default="$(find cleaning_robot_navigation)/maps/myworldmap.yaml"/>
+        <arg name="map" default="$(find cleaning_robot_navigation)/maps/gazebo_world.yaml"/>
         <arg name="coverage_area_offset" default="-0.5 -0.5 0 0 0 0"/>
         <arg name="coverage_area_size_x" default="10"/>
         <arg name="coverage_area_size_y" default="10"/>
