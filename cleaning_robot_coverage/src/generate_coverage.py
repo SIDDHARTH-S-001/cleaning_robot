@@ -20,6 +20,8 @@ class MapLoader:
         self.map_image = None
         self.x_offset = 0.15
         self.y_offset = 0.7
+        self.x_offset = 0.0
+        self.y_offset = 0.0
         self.tool_dia = 0.45
         self.robot_radi = 0.22
         self.tool_pixel = 0
@@ -47,8 +49,11 @@ class MapLoader:
         resolution = self.map_data["resolution"]
         origin = self.map_data["origin"]
 
-        y_map = -(origin[0] + (y_pixel * resolution) + self.y_offset)
-        x_map = origin[1] + (x_pixel * resolution) + self.x_offset
+        y_map = -(origin[1] + (y_pixel * resolution) + self.y_offset)
+        x_map = origin[0] + (x_pixel * resolution) + self.x_offset
+
+        # y_map = -((y_pixel * resolution) + self.y_offset)
+        # x_map = (x_pixel * resolution) + self.x_offset
 
         return x_map, y_map
 
@@ -183,11 +188,12 @@ class MapLoader:
         msg_data.data = str(map_points)
         publish_count = 0
         rospy.loginfo("Publishing Goal Points")
-        while publish_count < 10:
+        while not rospy.is_shutdown():
             self.points_publisher.publish(msg_data)
             publish_count += 1
             # self.rate.sleep()
-            time.sleep(0.5)
+            time.sleep(0.1)
+
 
     def optimize_points(self):
         final_points = []
