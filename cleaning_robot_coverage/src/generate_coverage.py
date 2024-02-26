@@ -5,7 +5,10 @@ import yaml
 import rospy
 import numpy as np
 from geometry_msgs.msg import PoseStamped
+from nav_msgs.msg import Path
+from std_msgs.msg import String
 from move_base_msgs.msg import MoveBaseActionGoal, MoveBaseActionResult
+import time
 
 
 class MapLoader:
@@ -21,12 +24,8 @@ class MapLoader:
         self.robot_radi = 0.22
         self.tool_pixel = 0
         self.robot_pixel = 0
-        self.move_base_goal_pub = rospy.Publisher(
-            "/move_base/goal", MoveBaseActionGoal, queue_size=1
-        )
-        rospy.Subscriber(
-            "/move_base/result", MoveBaseActionResult, self.move_base_result_callback
-        )
+        self.points_publisher = rospy.Publisher('/coverage_points', String, queue_size=10)
+        self.rate = rospy.Rate(2)
 
     def load_map(self):
         with open(self.yaml_file, "r") as file:
@@ -40,7 +39,7 @@ class MapLoader:
                 rospy.loginfo(f"{key}: {value}")
             self.tool_pixel = int(round(self.tool_dia / self.map_data["resolution"], 1))
             self.robot_pixel = int(round(self.robot_radi / self.map_data["resolution"], 1))
-            print('Tool pixel val: ' + str(self.tool_pixel))
+            # print('Tool pixel val: ' + str(self.tool_pixel))
         else:
             rospy.loginfo("Map parameters not available. Call load_map() first.")
 
@@ -69,23 +68,6 @@ class MapLoader:
 
         return True
 
-    def publish_goal(self, position):
-        goal_msg = MoveBaseActionGoal()
-        goal_msg.goal.target_pose.header.frame_id = "map"
-        goal_msg.goal.target_pose.pose.position.x = position[0]
-        goal_msg.goal.target_pose.pose.position.y = position[1]
-        goal_msg.goal.target_pose.pose.orientation.w = (
-            1.0  # Assuming you want to keep the orientation constant
-        )
-
-        rospy.loginfo(f"Publishing goal: {position}")
-        self.move_base_goal_pub.publish(goal_msg)
-
-    def move_base_result_callback(self, result_msg):
-        # This callback will be called when the move_base action result is received
-        # You can add additional logic here if needed
-        rospy.loginfo("MoveBase Action Result Received")
-
     def display_modified_map(self):
         if self.map_image is not None:
             # Convert the grayscale image to RGB
@@ -109,7 +91,7 @@ class MapLoader:
             # Initialize the result array
             result_array = np.ones(result_shape, dtype=np.int64)
             # print(len(y_range), len(x_range), max_index)
-            print("Shape of result_array:", result_array.shape, result_shape)
+            # print("Shape of result_array:", result_array.shape, result_shape)
 
             number_count = 1
 
@@ -145,14 +127,14 @@ class MapLoader:
                         result_array[x_ind, y_ind, 2] = y
                         result_array[x_ind, y_ind, 3] = 0
                     number_count += 1
-            # print(result_array[1:10,:])
-                    
-            # print('goal index', goal_index)
-            # result = self.spiral_dfs_with_blocked(result_array, (4,3))
 
             self.get_path(result_array)
 
+            rospy.loginfo("Coverage Path Generated")
+
             self.new_goal_points = self.optimize_points()
+
+            self.generate_map_points(self.new_goal_points)
 
             # goal_pixel_positions = self.goal_points
             goal_pixel_positions = self.new_goal_points
@@ -173,7 +155,7 @@ class MapLoader:
 
                     cv2.circle(color_map,(int(goal_pixel_positions[i][0]),int(goal_pixel_positions[i][1])),radius=1,color=(0, 0, 255),thickness=-1)
 
-            rospy.loginfo("Goal Positions (Map Coordinates):")
+            rospy.loginfo("Published Map Coordinates")
             # for position, index in goal_positions:
             #     rospy.loginfo(f"Goal {index}: {position}")
             #     self.publish_goal(position)  # Publish the goal to move_base/goal
@@ -181,13 +163,31 @@ class MapLoader:
             #     # Wait for the robot to reach the goal before proceeding to the next one
             #     rospy.wait_for_message('/move_base/result', MoveBaseActionResult)
 
-            cv2.imshow("Modified Map", img)
-            print(img.shape)
-            # cv2.imwrite('result.jpg', color_map)
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
+            # cv2.imshow("Modified Map", img)
+            # print(img.shape)
+            # # cv2.imwrite('result.jpg', color_map)
+            # cv2.waitKey(0)
+            # cv2.destroyAllWindows()
         else:
             rospy.loginfo("Map image not available. Call load_map() first.")
+
+    def generate_map_points(self,goal_points):
+        msg_data = String()
+        map_points = []
+        for path in goal_points:
+            map_path_points = []
+            for point in path:
+                x_map, y_map = self.pixel_to_map_coordinates(point[0], point[1])
+                map_path_points.append((round(x_map,2), round(y_map,2)))
+            map_points.append(map_path_points)
+        msg_data.data = str(map_points)
+        publish_count = 0
+        rospy.loginfo("Publishing Goal Points")
+        while publish_count < 10:
+            self.points_publisher.publish(msg_data)
+            publish_count += 1
+            # self.rate.sleep()
+            time.sleep(0.5)
 
     def optimize_points(self):
         final_points = []
@@ -252,22 +252,13 @@ class MapLoader:
                 if value[3] == 255:
                     return i, j
         
-        print("finished")
         return None, None
     
-    def check_valid(self, x,y):
-        if x >= 0 and x <= self.matrix.shape[1] or  y >= 0 and y <= self.matrix.shape[0]:
-            if self.matrix[x, y, 1] == 255:
-                return True
-        return False
 
 if __name__ == "__main__":
     # Replace these paths with your actual paths
     map_file_path = "/home/jatin/catkin_ws/src/CleaningRobot/cleaning_robot_navigation/maps/gazebo_world.pgm"
     yaml_file_path = "/home/jatin/catkin_ws/src/CleaningRobot/cleaning_robot_navigation/maps/gazebo_world.yaml"
-
-    # map_file_path = '/home/jatin/catkin_ws/src/CleaningRobot/cleaning_robot_navigation/maps/house_map.pgm'
-    # yaml_file_path = '/home/jatin/catkin_ws/src/CleaningRobot/cleaning_robot_navigation/maps/house_map.yaml'
 
     # Create MapLoader instance
     map_loader = MapLoader(map_file_path, yaml_file_path)
