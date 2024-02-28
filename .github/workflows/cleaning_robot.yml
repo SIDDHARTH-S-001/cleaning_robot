@@ -1,4 +1,4 @@
-name: AutoNav_CI
+name: CleaningRobot_CI
 
 on:
   # push:
