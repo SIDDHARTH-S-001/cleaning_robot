@@ -5,7 +5,7 @@ import yaml
 import rospy
 import numpy as np
 from geometry_msgs.msg import PoseStamped
-from nav_msgs.msg import Path
+from nav_msgs.msg import Path, OccupancyGrid
 from std_msgs.msg import String
 from move_base_msgs.msg import MoveBaseActionGoal, MoveBaseActionResult
 import time
@@ -27,23 +27,37 @@ class MapLoader:
         self.tool_pixel = 0
         self.robot_pixel = 0
         self.points_publisher = rospy.Publisher('/coverage_points', String, queue_size=10)
+        rospy.Subscriber("/map", OccupancyGrid, self.map_callback)
         self.rate = rospy.Rate(2)
 
     def load_map(self):
         with open(self.yaml_file, "r") as file:
             self.map_data = yaml.safe_load(file)
         self.map_image = cv2.imread(self.map_file, cv2.IMREAD_GRAYSCALE)
+        print(self.map_image.shape)
 
-    def display_map_parameters(self):
-        if self.map_data is not None:
-            rospy.loginfo("Map Parameters:")
-            for key, value in self.map_data.items():
-                rospy.loginfo(f"{key}: {value}")
-            self.tool_pixel = int(round(self.tool_dia / self.map_data["resolution"], 1))
-            self.robot_pixel = int(round(self.robot_radi / self.map_data["resolution"], 1))
-            # print('Tool pixel val: ' + str(self.tool_pixel))
-        else:
-            rospy.loginfo("Map parameters not available. Call load_map() first.")
+    def map_callback(self, msg):
+        
+        self.resolution = msg.info.resolution
+        self.width = msg.info.width
+        self.height = msg.info.height
+        self.orgin_x = msg.info.origin.position.x
+        self.orgin_y = msg.info.origin.position.y
+        self.tool_pixel = int(round(self.tool_dia / self.resolution, 1))
+        self.robot_pixel = int(round(self.robot_radi / self.resolution, 1))
+        map_data = np.array(msg.data).reshape((self.height, self.width))
+        map_image = (map_data * 255 / 100).astype(np.uint8)
+        map_image = cv2.bitwise_not(map_image)
+        map_image = cv2.flip(map_image, 0)
+        # map_image_gray = cv2.cvtColor(map_image, cv2.COLOR_GRAY2BGR)
+        map_image = cv2.resize(map_image, (self.width, self.height))
+        print(map_image.shape)
+        # self.map_image = cv2.resize(map_image, (self.width, self.height))
+        # cv2.imshow("Map", self.map_image)
+        cv2.imshow("Map", map_image)
+        cv2.waitKey(0)
+        # if cv2.waitKey(1) & 0xFF == ord('q'):
+        #     pass
 
     def pixel_to_map_coordinates(self, x_pixel, y_pixel):
         resolution = self.map_data["resolution"]
@@ -51,9 +65,6 @@ class MapLoader:
 
         y_map = -(origin[1] + (y_pixel * resolution) + self.y_offset)
         x_map = origin[0] + (x_pixel * resolution) + self.x_offset
-
-        # y_map = -((y_pixel * resolution) + self.y_offset)
-        # x_map = (x_pixel * resolution) + self.x_offset
 
         return x_map, y_map
 
@@ -194,7 +205,6 @@ class MapLoader:
             # self.rate.sleep()
             time.sleep(0.1)
 
-
     def optimize_points(self):
         final_points = []
         for goal in self.goal_points:
@@ -251,7 +261,6 @@ class MapLoader:
     def mark_visited(self, x, y):
         self.matrix[x,y,3] = 0
 
-
     def get_index(self):
         for i, array in enumerate(self.matrix):
             for j, value in enumerate(array):
@@ -271,7 +280,6 @@ if __name__ == "__main__":
 
     # Load and display map parameters
     map_loader.load_map()
-    map_loader.display_map_parameters()
 
     # Display modified map
     map_loader.display_modified_map()
