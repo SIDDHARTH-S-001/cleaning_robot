@@ -21,7 +21,7 @@ WORKDIR /cleaning_robot_hardware /catkin_ws/src/cleaning_robot_hardware
 
 WORKDIR /cleaning_robot_navigation /catkin_ws/src/cleaning_robot_navigation
 
-WORKDIR /full_coverage_path_planner /catkin_ws/src/full_coverage_path_planner
+# WORKDIR /full_coverage_path_planner /catkin_ws/src/full_coverage_path_planner
 
 RUN /bin/bash -c 'source /opt/ros/noetic/setup.bash \
     && catkin_make'
