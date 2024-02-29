@@ -31,7 +31,7 @@ jobs:
         DOCKER_CLI_AARCH64_IMAGE: docker.io/docker/cli:24.0.6-dind-aarch64
       run: |
         docker buildx build \
-          --push --platform=linux/amd64 \
+          --push --platform=linux/arm64,linux/amd64 \
           -t jatinvpatil/cleaning_robot:latest \
           --file cleaning_robot.Dockerfile \
           .
