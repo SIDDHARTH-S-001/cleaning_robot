@@ -25,11 +25,11 @@ COPY /full_coverage_path_planner /catkin_ws/src/full_coverage_path_planner
 
 WORKDIR /catkin_ws
 
-RUN /bin/bash -c 'source /opt/ros/noetic/setup.bash \
-    && catkin_make'
+# RUN /bin/bash -c 'source /opt/ros/noetic/setup.bash \
+#     && catkin_make'
 
-RUN echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
+# RUN echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
 
-RUN echo "source /catkin_ws/devel/setup.bash" >> ~/.bashrc
+# RUN echo "source /catkin_ws/devel/setup.bash" >> ~/.bashrc
 
 CMD bash
