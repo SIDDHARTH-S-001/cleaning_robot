@@ -11,17 +11,19 @@ RUN apt-get update && apt-get install -y \
 RUN apt-get install -y libudev-dev \
     libusb*
 
-WORKDIR /cleaning_robot_coverage /catkin_ws/src/cleaning_robot_coverage
+COPY /cleaning_robot_coverage /catkin_ws/src/cleaning_robot_coverage
 
-WORKDIR /cleaning_robot_description /catkin_ws/src/cleaning_robot_description
+COPY /cleaning_robot_description /catkin_ws/src/cleaning_robot_description
 
-WORKDIR /cleaning_robot_gazebo /catkin_ws/src/cleaning_robot_gazebo
+COPY /cleaning_robot_gazebo /catkin_ws/src/cleaning_robot_gazebo
 
-WORKDIR /cleaning_robot_hardware /catkin_ws/src/cleaning_robot_hardware
+COPY /cleaning_robot_hardware /catkin_ws/src/cleaning_robot_hardware
 
-WORKDIR /cleaning_robot_navigation /catkin_ws/src/cleaning_robot_navigation
+COPY /cleaning_robot_navigation /catkin_ws/src/cleaning_robot_navigation
 
-# WORKDIR /full_coverage_path_planner /catkin_ws/src/full_coverage_path_planner
+COPY /full_coverage_path_planner /catkin_ws/src/full_coverage_path_planner
+
+WORKDIR /catkin_ws
 
 RUN /bin/bash -c 'source /opt/ros/noetic/setup.bash \
     && catkin_make'
