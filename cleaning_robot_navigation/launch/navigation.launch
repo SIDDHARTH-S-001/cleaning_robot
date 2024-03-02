@@ -1,10 +1,10 @@
 
 <launch>
     <!-- Arguments -->
-    <arg name="map_file" default="$(find cleaning_robot_navigation)/maps/gazebo_world.yaml"/>
+    <arg name="map_file" default="$(find cleaning_robot_navigation)/maps/L1012.yaml"/>
     
     <arg name="move_forward_only" default="false"/>
-    <include file="$(find cleaning_robot_navigation)/launch/rviz.launch"/>
+    <!--<include file="$(find cleaning_robot_navigation)/launch/rviz.launch"/>-->
   
     <!-- Map server -->
     <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
