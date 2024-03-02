@@ -32,6 +32,7 @@ class OdometryCalculator:
     
     def calculate_odometry(self):
         rate = rospy.Rate(10)  # Update rate (10 Hz)
+        self.dt = 1.0 / 10.0
         
         while not rospy.is_shutdown():
             delta_left = self.left_ticks - self.last_left_ticks
