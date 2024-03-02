@@ -2,7 +2,7 @@
   <node name="ydlidar_lidar_publisher"  pkg="ydlidar_ros_driver"  type="ydlidar_ros_driver_node" output="screen" respawn="false" >
     <!-- string property -->
     <param name="port"         type="string" value="/dev/ttyUSB1"/>  
-    <param name="frame_id"     type="string" value="laser_frame"/>
+    <param name="frame_id"     type="string" value="ydlidar_1"/>
     <param name="ignore_array"     type="string" value=""/>
 
     <!-- int property -->
@@ -33,6 +33,6 @@
     <!-- frequency is invalid, External PWM control speed -->
     <param name="frequency"    type="double" value="10.0"/>
   </node>
-  <node pkg="tf" type="static_transform_publisher" name="base_link_to_laser4"
-    args="0.0 0.0 0.2 0.0 0.0 0.0 /base_footprint /laser_frame 40" />
+  <!-- <node pkg="tf" type="static_transform_publisher" name="base_link_to_laser4"
+    args="0.0 0.0 0.2 0.0 0.0 0.0 /base_footprint /laser_frame 40" /> -->
 </launch>

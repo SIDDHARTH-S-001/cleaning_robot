@@ -4,6 +4,8 @@
       <param name="baud" value="57600"/>
     </node>
 
+    <include file="$(find cleaning_robot_description)/launch/display.launch"/>
+
     <node name="pid_control" pkg="cleaning_robot_hardware" type="pid_control.py"/>
 
     <node name="odometry" pkg="cleaning_robot_hardware" type="odometry.py"/>
